@@ -14,7 +14,7 @@
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
-<body class="container">
+<body class="container bg-dark text-white">
     <ul class="nav">
         <li class="nav-item">
             <a class="nav-link" href="{{ route('post.index') }}">posts</a>

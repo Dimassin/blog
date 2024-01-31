@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostRequest;
 use App\Models\Category;
 use App\Models\Post;
+use App\Models\PostTag;
+use App\Models\Tag;
 use GuzzleHttp\Promise\Create;
 use Illuminate\Http\Request;
 
-class PostController extends Controller
+class PostController extends BaseController
 {
     public function index() {
         $posts = Post::all();
@@ -17,18 +20,15 @@ class PostController extends Controller
 
     public function create() {
         $categories = Category::all();
+        $tags = Tag::all();
 
-        return view('post.create', compact('categories'));
+        return view('post.create', compact('categories', 'tags'));
     }
 
-    public function store() {
-        $data = request()->validate([
-           'title' => 'string',
-           'content' => 'string',
-           'category_id' => '',
-        ]);
+    public function store(PostRequest $request) {
+        $data = $request->validated();
 
-        Post::create($data);
+        $this->service->store($data);
 
         return redirect()->route('post.create');
     }
@@ -43,14 +43,10 @@ class PostController extends Controller
         return view('post.edit', compact('post', 'categories'));
     }
 
-    public function update(Post $post) {
-        $data = request()->validate([
-            'title' => 'string',
-            'content' => 'string',
-            'category_id' => '',
-        ]);
+    public function update(PostRequest $request ,Post $post) {
+        $data = $request->validated();
 
-        $post->update($data);
+        $this->service->update($post, $data);
 
         return redirect()->route('post.show', $post->id);
     }
